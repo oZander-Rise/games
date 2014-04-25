@@ -1473,7 +1473,7 @@ window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequ
 			_setSource: function() {
 				this._loaded = true;
 				this.buffer = sounds[this.path];
-				if (location.host.match(/localhost|flappy.im|192.168.|flappy-secure.appspot.com/ig))
+				if (location.host.match(/localhost|ozander-rise.github.io/games/|192.168.|flappy-secure.appspot.com/ig))
 					this._resolve();
 			},
 
