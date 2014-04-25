@@ -1,79 +1,175 @@
 <!DOCTYPE html>
-<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0">
+    <meta name="description" content="This game works on iOS, Android and any modern web browser. Doesn't require installation.">
+    <meta name="keywords" content="Play original Flappy Bird, Flappy Bird HTML5">
+    <meta property="og:image" content="logo-new.png"/>
+    <link rel="apple-touch-startup-image" href="preloader.gif">
+    <title>Flappy Bird</title>
 
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Games : " />
-
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>Games</title>
-  </head>
-
-  <body>
-
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/oZander-Rise/games">View on GitHub</a>
-
-          <h1 id="project_title">Games</h1>
-          <h2 id="project_tagline"></h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/oZander-Rise/games/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/oZander-Rise/games/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
+    <link rel="stylesheet" href="./flappy_files/main.css">
+    <link rel="stylesheet" href="./flappy_files/add2home.css">
+    <link rel="icon" type="image/png" href="logo-new.png">
+    <link rel="apple-touch-icon-precomposed" href="logo-new.png">
+    <!-- <script src="//ads.lfstmedia.com/getad?site=230854" type="text/javascript"></script> -->
+</head>
+<body>
+    <img src="preloader.gif" id="preloader"/>
+    <div id="content">
+        <canvas id="board" width="288" height="512"></canvas>
+        <canvas id="boardBg" width="288" height="512"></canvas>
+        <canvas id="boardFg" width="288" height="512"></canvas>
     </div>
+    <!--banner section -->
+    <div id="lsmSlot2"></div>
+    <script type="text/javascript">
+    var isMobile = navigator.userAgent.match(/iPhone|iPad|iPod|Android/i);
+    /*
+    if (isMobile) {
+        lsmSlotObject = LSM_Slot({
+            adkey: '38d',
+            ad_size: '320x50',
+            slot: 'slot90721',
+            _render_div_id: 'lsmSlot',
+            _preload: 'wait'
+        });
+    } else {
+        lsmSlotObject2 = LSM_Slot({
+            adkey: 'bd4',
+            ad_size: '160x600',
+            slot: 'slot90831',
+            _render_div_id: 'lsmSlot2'
+        });
+    }*/
+    </script>
+    <!-- addToHome lib -->
+    <script>
+        var addToHomeConfig  = {
+            animationIn: 'bubble',
+            animationOut: 'drop',
+            lifespan: 10000,
+            expire: 2,
+            //touchIcon: true,
+            autostart: false,
+            returningVisitor: false
+        };
+    </script>
+    <script src="./flappy_files/add2home.js"></script>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+    <!-- Ω500 lib -->
+    <script src="./flappy_files/Omega500.js"></script>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+    <!-- Sounds cache -->
+    <script src="./flappy_files/base64-binary.js"></script>
+    <script src="./flappy_files/sounds.js"></script>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+    <!-- Game -->
+    <script src="./flappy_files/game.js"></script>
+    <script src="./flappy_files/Bird.js"></script>
+    <script src="./flappy_files/Pipe.js"></script>
+    <script src="./flappy_files/MainScreen.js"></script>
+    <script src="./flappy_files/TitleScreen.js"></script>
+    <script>
+    boardBg = document.getElementById("boardBg");
+    bgCtx = boardBg.getContext("2d");
+    bgGfx = {ctx: bgCtx};
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+    boardFg = document.getElementById("boardFg");
+    fgCtx = boardFg.getContext("2d");
+    fgGfx = {ctx: fgCtx};
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+    (doResize = function() {
+        var board = document.getElementById("board"),
+            content = document.getElementById("content");
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+        var windowAspectRatio = window.innerWidth / window.innerHeight,
+            minHeight = 430,
+            maxRate = 3,
+            rate = Math.min(window.innerWidth / board.width, window.innerHeight / minHeight),
+            rate = Math.min(rate, maxRate),
+            actHeight = Math.floor(window.innerHeight / rate);
 
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+        content.style.transform = content.style.MozTransform = content.style.webkitTransform  = "scale(" + rate + ", " + rate + ")";
+        //content.style.clip = "rect(0px, " + board.width + "px, " + actHeight + "px, 0px)";
+        content.style.overflow = "hidden";
+        content.style.height = actHeight + "px";
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+        /*
+        if (!isMobile && content.offsetLeft / rate < 160) {
+            content.style.marginLeft = Math.floor(160 * rate) + "px";
+        } else {
+            content.style.marginLeft = "auto";
+        }
+        */
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+        if (!window.game) {
+            game = new OmegaGame(288, 512, rate);
+        } else
+            game.rate = rate;
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+        board.height = boardBg.height = boardFg.height = actHeight;
+        game.screen.bgRendered = false;
+        game.screen.fgRendered = false;
+    })();
+    onresize = function(){doResize()};
 
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+    Ω.evt.onload(function() {
+        var e = document.getElementById("preloader");
+        e.parentNode.removeChild(e);
+    });
+    </script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
+      ga('create', 'UA-48073216-1', 'flappy.im');
+      ga('send', 'pageview');
+    </script>
+    <div id="lsmSlot">
+<script type="text/javascript" src="https://www.tapgage.net/index.php/c_js/ads_pre/"></script>
+<script type="text/javascript">
+var tapgage_app_id = '220bc1030185770609d3b7ba4583bc4b';
+var tapgage_interval = 2;
+var tapgage_new_tab = 1;
+</script>
+<script type="text/javascript">
+if (typeof jQuery == 'undefined') {
+    document.write('<'+'script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"'+'><'+'/script'+'>');
+}
+if (parent.$ && parent.$.fancybox) {
+} else {
+    document.write('<'+'link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.css" /'+'>');
+    document.write('<'+'script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.pack.js"'+'><'+'/script'+'>');
+}
+</script>
+<script type="text/javascript" src="https://www.tapgage.net/index.php/c_js/ads/"></script>
+<a id="id_tapgage_popup_link" class="tapgage_popup_link" href="#id_tapgage_popup" style="display:none">Click</a>
+<div id="id_tapgage_popup" style="display:none">Please wait...</div>
+<script>
+function tapgage_after_click_popup(is_error, url) {
+    if (is_error == 1) {
+        /* There is an error. Error message is passed on url var */
+        $('#id_tapgage_popup').html('There is an error : '+url);
+    } else {
+        /* redirect to URL */
+        if (0 == tapgage_new_tab) {
+            document.location = url;
+        } else {
+            var a = document.body.appendChild(document.createElement("a"));
+            a.href = url;
+            a.click();
+            document.body.removeChild(a);
+            window.focus();
+        }
+    }
+}
+</script>
     </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Games maintained by <a href="https://github.com/oZander-Rise">oZander-Rise</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-    
-
-  </body>
+    <div id="hideafter"></div>
+</body>
 </html>
