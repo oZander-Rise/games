@@ -106,7 +106,7 @@ ButtonsHandler = function(e)
         var isMobile = navigator.userAgent.match(/iPhone|iPad|iPod|Android/i);
         if (isTouchInRect(Ω.gfx.w / 2 + 10, Ω.gfx.h - 223,
                 Ω.gfx.w / 2 + 10 + 53, Ω.gfx.h - 223 + 46)) {
-            var tweetText = "Playing the original #FlappyBird at http://ozander-rise.github.io/games/." + 
+            var tweetText = "Playing the original #FlappyBird at http://flappy.im/." + 
                 (game.screen.score > 2 ? (" Just scored " + game.screen.score + ".") : "");
             if (isMobile) {
                 location.href = "twitter://post?message=" + escape(tweetText);
@@ -120,10 +120,10 @@ ButtonsHandler = function(e)
                 Ω.gfx.w / 2 - 53 - 10 + 53, Ω.gfx.h - 223 + 46)) {
             if(navigator.language != "ru")
             {
-                var fbUrl = "http://ozander-rise.github.io/games/?facebook",
+                var fbUrl = "http://flappy.im/?facebook",
                     fbTitle = "Just scored " + game.screen.score + " on Flappy Bird!",
                     fbSummary = "This game works on iOS, Android and any modern web browser. Doesn't require installation.",
-                    fbImage = "http://ozander-rise.github.io/games/logo-new.png",
+                    fbImage = "http://flappy.im/logo-new.png",
                     finalUrl = "http://www.facebook.com/sharer.php?s=100&p[url]=" + encodeURIComponent(fbUrl)
                         + "&p[images][0]=" + encodeURIComponent(fbImage)
                         + "&p[title]=" + encodeURIComponent(fbTitle)
@@ -147,10 +147,10 @@ ButtonsHandler = function(e)
                     cases = [2, 0, 1, 1, 1, 2], 
                     number = game.screen.score;
 
-                var vkUrl = "http://ozander-rise.github.io/games/?vk",
+                var vkUrl = "http://flappy.im/?vk",
                     vkTitle = "Я пролетел " + number + ' ' + titles[(number%100>4 && number%100<20)? 2 : cases[(number%10<5)?number%10:5]] + " в игре Flappy Bird!",
                     vkSummary = "Игра работает на iOS, Android и любых других браузерах. Не требует установки.",
-                    vkImage = "http://ozander-rise.github.io/games/logo-new.png",
+                    vkImage = "http://flappy.im/logo-new.png",
                     finalUrl = "http://vkontakte.ru/share.php?[url]=" + encodeURIComponent(vkUrl)
                         + '&image='  + encodeURIComponent(vkImage)
                         + '&title=' + encodeURIComponent(vkTitle)
